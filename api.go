@@ -27,7 +27,7 @@ type (
 
 	// RouteNoteDetails @response
 	RouteNoteDetails struct {
-		routes []RouteNote `json:"routes"`
+		routes []routeSummary `json:"routes"`
 	}
 
 	routeSummary struct {
