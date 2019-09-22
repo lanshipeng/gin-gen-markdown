@@ -133,7 +133,7 @@ func parseStruct(d *ast.TypeSpec, m *message, recursive bool) {
 					f.Name = strings.TrimSpace(strings.Replace(s, "json:", "", -1))
 					f.Name = strings.Replace(f.Name, "\"", "", -1)
 					if recursive {
-						f.Name = "  " + f.Name
+						f.Name = "\t" + f.Name
 					}
 				}
 				if t, ok := v.Type.(*ast.Ident); ok {
