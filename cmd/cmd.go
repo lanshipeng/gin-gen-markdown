@@ -70,7 +70,7 @@ func scanStruct(path string) (apis []*api) {
 		panic(err)
 	}
 
-	ast.Print(fset, f)
+	// ast.Print(fset, f)
 	ap := &api{}
 	ap.Method = "GET/POST"
 	for _, decl := range f.Decls {
