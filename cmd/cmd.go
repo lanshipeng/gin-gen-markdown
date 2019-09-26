@@ -73,6 +73,7 @@ func scanStruct(path string) (apis []*api) {
 	// ast.Print(fset, f)
 	ap := &api{}
 	ap.Method = "GET/POST"
+	ap.Obj = make(map[string]*message)
 	for _, decl := range f.Decls {
 		if gen, ok := decl.(*ast.GenDecl); ok && gen.Tok == token.TYPE {
 			for _, s := range gen.Specs {
@@ -88,32 +89,32 @@ func scanStruct(path string) (apis []*api) {
 						k := strings.Index(do.Doc.List[1].Text, "@")
 						if strings.TrimSpace(do.Doc.List[1].Text[k+1:]) == "request" {
 							m := &message{}
-							parseStruct(do, m, false)
+							parseStruct(do, m, ap.Obj, false, "")
 							ap.Request = m
 						}
 					} else if strings.TrimSpace(do.Doc.List[0].Text[j+1:]) == "response" {
 						m := &message{}
-						parseStruct(do, m, false)
+						parseStruct(do, m, ap.Obj, false, "")
 						ap.Reply = m
-
 					}
 					if ap.Reply != nil && ap.Request != nil {
 						apis = append(apis, ap)
 						ap = &api{}
 						ap.Method = "GET/POST"
+						ap.Obj = make(map[string]*message)
 					}
 				}
 			}
 
 		}
 	}
-
 	return
 
 }
 
 // parseStruct 递归解析结构体参数 TODO: 请求参数复杂类型
-func parseStruct(d *ast.TypeSpec, m *message, recursive bool) {
+func parseStruct(d *ast.TypeSpec, m *message, objs map[string]*message, recursive bool, typeName string) {
+	me := &message{}
 	if st, ok := d.Type.(*ast.StructType); ok {
 		if len(st.Fields.List) > 0 {
 			for _, v := range st.Fields.List {
@@ -132,9 +133,9 @@ func parseStruct(d *ast.TypeSpec, m *message, recursive bool) {
 					s := strings.Trim(f.Name, "`")
 					f.Name = strings.TrimSpace(strings.Replace(s, "json:", "", -1))
 					f.Name = strings.Replace(f.Name, "\"", "", -1)
-					if recursive {
-						f.Name = "\t" + f.Name
-					}
+					//if recursive {
+					//	f.Name = "\t" + f.Name
+					//}
 				}
 				if t, ok := v.Type.(*ast.Ident); ok {
 					f.Type = t.Name
@@ -149,22 +150,30 @@ func parseStruct(d *ast.TypeSpec, m *message, recursive bool) {
 					f.Note = strings.Replace(f.Note, "/", "", -1)
 				}
 
-				m.Fields = append(m.Fields, f)
+				if recursive {
+					me.Fields = append(me.Fields, f)
+				} else {
+					m.Fields = append(m.Fields, f)
+				}
 				if t, ok := v.Type.(*ast.Ident); ok {
 					if t.Obj != nil {
 						if ot, ok := t.Obj.Decl.(*ast.TypeSpec); ok {
-							parseStruct(ot, m, true)
+							parseStruct(ot, m, objs, true, t.Obj.Name)
 						}
-
 					}
 				} else if t, ok := v.Type.(*ast.ArrayType); ok {
 					if tt, ok := t.Elt.(*ast.Ident); ok {
 						if tt.Obj != nil {
 							if ott, ok := tt.Obj.Decl.(*ast.TypeSpec); ok {
-								parseStruct(ott, m, true)
+								parseStruct(ott, m, objs, true, tt.Obj.Name)
 							}
 						}
 					}
+				}
+			}
+			if recursive {
+				if _, ok := objs[typeName]; !ok {
+					objs[typeName] = me
 				}
 			}
 		}

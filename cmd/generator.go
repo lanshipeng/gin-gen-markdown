@@ -17,6 +17,7 @@ type api struct {
 	Path    string
 	Doc     string
 	Request *message
+	Obj     map[string]*message
 	Reply   *message
 	Input   string
 	Output  string
@@ -65,6 +66,7 @@ func (t *tool) generateDoc(file string) {
 		}
 	}()
 
+	var objKeys []string
 	for _, api := range t.apis {
 		t.P("## ", api.Path)
 		t.P()
@@ -91,6 +93,37 @@ func (t *tool) generateDoc(file string) {
 		table.AppendBulk(rows)
 		table.Render()
 		t.P(buf.String())
+
+		t.P()
+
+		for k, message := range api.Obj {
+			isPrint := false
+			for _, v := range objKeys { // 避免重复输出相同对象
+				if k == v {
+					isPrint = true
+				}
+			}
+			if !isPrint {
+				t.P("### ", k)
+				rows = make([][]string, 0, len(message.Fields))
+				for _, fs := range message.Fields {
+					rows = append(rows, []string{fs.Name, fs.Type, fs.Note, fs.Doc})
+				}
+
+				buf = new(bytes.Buffer)
+				table = tablewriter.NewWriter(buf)
+				table.SetHeader([]string{"参数名", "类型", "说明", "是否必须"})
+				table.SetBorders(tablewriter.Border{Left: true})
+				table.SetCenterSeparator("|")
+				table.SetColWidth(72)
+				table.AppendBulk(rows)
+				table.Render()
+				t.P(buf.String())
+
+				t.P()
+				objKeys = append(objKeys, k)
+			}
+		}
 
 		t.P()
 		t.P("### Reply")
