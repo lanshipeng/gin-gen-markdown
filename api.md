@@ -29,7 +29,7 @@ GET/POST
 | name     | string |  The name of the feature.                 |          |
 | location | Point  |  The point where the feature is detected. |          |
 
-## http://127.0.0.1/RecordRoute
+## http://127.0.0.1/GetRecordRoute
 
 
 

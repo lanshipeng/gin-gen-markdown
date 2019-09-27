@@ -18,7 +18,7 @@ type (
 		location Point  `json:"location"` // The point where the feature is detected.
 	}
 
-	// @RecordRoute
+	// @GetRecordRoute
 	// RouteNote @request
 	RouteNote struct {
 		location Point  `json:"location" binding:"required"` // The location from which the message is sent.
@@ -37,3 +37,14 @@ type (
 		elapsed_time  int32 `json:"elapsed_time"`  // The duration of the traversal in seconds.
 	}
 )
+
+// 对外接口
+// GetFeature
+func GetFeature() {
+	// TODO
+}
+
+// GetRecordRoute
+func GetRecordRoute() {
+	// TODO
+}

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -20,6 +21,13 @@ var (
 	mdPath      string
 	prefix_file string
 )
+
+// textInfo 参数信息
+type textInfo struct {
+	Json    string `json:"json"`
+	Form    string `json:"form"`
+	Binding string `json:"binding"`
+}
 
 func init() {
 	Cmd.Flags().StringVar(&mdPath, "mark_down", ".", "mark_down path")
@@ -121,21 +129,26 @@ func parseStruct(d *ast.TypeSpec, m *message, objs map[string]*message, recursiv
 				f := field{}
 				if v.Tag != nil {
 					f.Name = v.Tag.Value
-					if strings.Contains(f.Name, "required") {
-						i := strings.Index(f.Name, "binding")
-						if i > -1 {
-							f.Name = f.Name[:i]
-						}
+					f.Name = strings.Replace(f.Name, " ", ",\"", -1)
+					f.Name = strings.Replace(f.Name, ":", "\":", -1)
+					f.Name = strings.Replace(f.Name, "`", "{\"", 1)
+					f.Name = strings.Replace(f.Name, "`", "}", 1)
+					ti := &textInfo{}
+					if err := json.Unmarshal([]byte(f.Name), ti); err != nil {
+						Error(err)
+					}
+
+					if ti.Json == "" {
+						f.Name = ti.Form
+					} else {
+						f.Name = ti.Json
+					}
+
+					if ti.Binding == "required" {
 						f.Doc = "Y"
 					} else {
 						f.Doc = "N"
 					}
-					s := strings.Trim(f.Name, "`")
-					f.Name = strings.TrimSpace(strings.Replace(s, "json:", "", -1))
-					f.Name = strings.Replace(f.Name, "\"", "", -1)
-					//if recursive {
-					//	f.Name = "\t" + f.Name
-					//}
 				}
 				if t, ok := v.Type.(*ast.Ident); ok {
 					f.Type = t.Name
