@@ -1,13 +1,16 @@
 ## Goals
-- 基于gin的http接口,自动化构建markdown接口文档
+- Based on the HTTP interface gin, automated build markdown interface documentation
 
 ## Usages
 
-- 基于ast实现，通过ast解析源代码结构。将参数名、类型、注释等字段提取生成到md文档。
+- Based on the ast implementation, through the ast parsing source code structure.
+  Extract the parameter name, type, comment, and other fields and generate them into the md document.
 
-- 构建文档前需要添加一些必要注释@request、 @response和对外暴露提供的接口名。具体可参考api.go。
+- You need to add the necessary comments `@request`, `@response`, and exposed interface names before you
+    build the document. Please refer to ![api.go](https://github.com/lanshipeng/gin-gen-markdown/blob/master/api.go) for details.
 
-- 通过mark_down命令行参数可以指定目录树路径，prefix命令行参数指定需要遍历的文件前缀或后缀。
+- The directory tree path can be specified with the mark_down command line argument,
+  and the prefix command line argument specifies the file prefix or suffix to traverse.
 
 
 ## Quick start
