@@ -9,8 +9,8 @@
 - You need to add the necessary comments `@request`, `@response`, and exposed interface names before you
     build the document. Please refer to [api.go](https://github.com/lanshipeng/gin-gen-markdown/blob/master/api.go) for details.
 
-- The directory tree path can be specified with the `mark_down` command line argument,
-  and `the prefix` command line argument specifies the file prefix or suffix to traverse.
+- The directory tree path can be specified with `mark_down` command line argument,
+  and `prefix` command line argument specifies the file prefix or suffix to traverse.
 
 
 ## Quick start
