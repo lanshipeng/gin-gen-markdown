@@ -55,8 +55,6 @@ var Cmd = &cobra.Command{
 			if strings.HasSuffix(file, prefix_file) {
 				t.apis = scanStruct(file)
 				mdName := strings.Replace(file, ".go", ".md", -1)
-				mdPath, _ := filepath.Abs(filepath.Dir(file))
-				mdName = mdPath + "/" + mdName
 
 				t.generateDoc(mdName)
 			}
