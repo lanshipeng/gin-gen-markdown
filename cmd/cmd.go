@@ -34,7 +34,7 @@ type textInfo struct {
 func init() {
 	Cmd.Flags().StringVar(&mdPath, "mark_down", ".", "mark_down path")
 	Cmd.Flags().StringVar(&prefix_file, "prefix", "api.go", "prefix file")
-	Cmd.Flags().StringVar(&domain, "domain", url_path, "prefix file")
+	Cmd.Flags().StringVar(&domain, "domain", url_path, "route")
 }
 
 // Cmd run version
