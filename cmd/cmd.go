@@ -93,7 +93,7 @@ func scanStruct(path string) (apis []*api) {
 						doc := do.Doc.List[0].Text[:j]
 						doc = strings.TrimSpace(strings.Replace(doc, "//", "", -1))
 						ap.Doc = doc
-						ap.Path = url_path + do.Doc.List[0].Text[j+1:]
+						ap.Path = domain + do.Doc.List[0].Text[j+1:]
 
 						k := strings.Index(do.Doc.List[1].Text, "@")
 						if strings.TrimSpace(do.Doc.List[1].Text[k+1:]) == "request" {

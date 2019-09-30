@@ -10,7 +10,8 @@
     build the document. Please refer to [api.go](https://github.com/lanshipeng/gin-gen-markdown/blob/master/api.go) for details.
 
 - The directory tree path can be specified with `mark_down` command line argument,
-  and `prefix` command line argument specifies the file prefix or suffix to traverse.
+  and `prefix` command line argument specifies the file prefix or suffix to traverse,
+  `domain` set the url path. If you do not set these variables, they will use the default values.
 
 
 ## Quick start
@@ -22,5 +23,5 @@ go install
 gin-gen-markdown -h
 
 # generate doc
-gin-gen-markdown doc --mark_down=. --prefix=api.go
+gin-gen-markdown doc --mark_down=. --prefix=api.go --domain=http://127.0.0.1/
 ```
