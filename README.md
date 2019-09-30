@@ -22,5 +22,5 @@ go install
 gin-gen-markdown -h
 
 # generate doc
-gin-gen-markdown --mark_down=. --prefix=api.go
+gin-gen-markdown doc --mark_down=. --prefix=api.go
 ```

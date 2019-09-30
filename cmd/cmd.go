@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -20,6 +21,7 @@ const (
 var (
 	mdPath      string
 	prefix_file string
+	domain      string
 )
 
 // textInfo 参数信息
@@ -32,6 +34,7 @@ type textInfo struct {
 func init() {
 	Cmd.Flags().StringVar(&mdPath, "mark_down", ".", "mark_down path")
 	Cmd.Flags().StringVar(&prefix_file, "prefix", "api.go", "prefix file")
+	Cmd.Flags().StringVar(&domain, "domain", url_path, "prefix file")
 }
 
 // Cmd run version
@@ -52,9 +55,9 @@ var Cmd = &cobra.Command{
 			if strings.HasSuffix(file, prefix_file) {
 				t.apis = scanStruct(file)
 				mdName := strings.Replace(file, ".go", ".md", -1)
-				if mdPath != "." {
-					mdName = mdPath + "/" + mdName
-				}
+				mdPath, _ := filepath.Abs(filepath.Dir(file))
+				mdName = mdPath + "/" + mdName
+
 				t.generateDoc(mdName)
 			}
 		}
@@ -135,6 +138,7 @@ func parseStruct(d *ast.TypeSpec, m *message, objs map[string]*message, recursiv
 					f.Name = strings.Replace(f.Name, "`", "}", 1)
 					ti := &textInfo{}
 					if err := json.Unmarshal([]byte(f.Name), ti); err != nil {
+						fmt.Println(f.Name)
 						Error(err)
 					}
 
