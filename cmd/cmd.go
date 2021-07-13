@@ -44,7 +44,7 @@ var Cmd = &cobra.Command{
 	Long:  `Run doc`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var files []string
-		root := "."
+		root := mdPath
 		t := newGenerator()
 
 		err := filepath.Walk(root, scanFile(&files))
